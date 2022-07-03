@@ -256,42 +256,44 @@ def create_app(test_config=None):
     """
     @app.route("/quizzes", methods=["POST"])
     def get_quiz():
-        #question = Question.question.query.all()
-        #category = Question.category.query.all()
-        
-        body = request.get_json()
-        
-        prev_questions = body.get("previous_questions", None)
-        #quiz_answer = body.get("quiz_answer")
-        category = body.get("quiz_category", None)
-        #quiz_difficulty = body.get("quiz_difficulty")
-        
-        if category is None:
-            abort(400)
+        try:
+            body = request.get_json()
             
-        if category["id"] == 0:
-            #questions = Question.query.filter(Question.id.notin_(prev_questions)).all()
-            questions = Question.query.all()
-        
-        else:
-            #questions = Question.query.filter(Question.category == category["id"], Question.id.notin_(prev_questions)).all()
-            questions = Question.query.filter(Question.category == category["id"]).all()
-        
-        quiz_questions = []
-        
-        for question in questions:
-            if question.id not in prev_questions:
-                quiz_questions.append(question)
+            prev_questions = body.get("previous_questions", None)
+            #quiz_answer = body.get("quiz_answer")
+            quiz_category = body.get("quiz_category", None)
+            #quiz_difficulty = body.get("quiz_difficulty")
                 
-        if len(quiz_questions) == 0:
-            abort(404)
+            if quiz_category["id"] == 0:
+                #questions = Question.query.filter(Question.id.notin_(prev_questions)).all()
+                questions = Question.query.all()
             
-        random_question = random.choice(quiz_questions)
-        
-        return jsonify({
-            'success': True,
-            'question': random_question.format()
-        })
+            else:
+                questions = Question.query.filter(Question.category == quiz_category["id"], Question.id.notin_(prev_questions)).all()
+                #questions = Question.query.filter(Question.category == quiz_category["id"]).all()
+            
+            quiz_questions = []
+            
+            for question in questions:
+                if question.id not in prev_questions:
+                    quiz_questions.append(question)
+                    
+            if len(quiz_questions) == 0:
+                return jsonify({
+                'success': True,
+                'question': None
+                #'question': random_question.format()
+            })
+                
+            random_question = random.choice(quiz_questions)
+            
+            return jsonify({
+                'success': True,
+                'question': random_question.format()
+            })
+        except Exception as e:
+            print(e)
+            abort(422)
 
     """
     Here are the error handlers for all expected errors
