@@ -42,13 +42,27 @@ def create_app(test_config=None):
     #This endpoint to handles GET requests for all available categories.
     @app.route("/categories")
     def get_categories():
+        page = request.args.get("page", 1, type=int)
+        start = (page - 1) * 10
+        end = start + 10
+        
+        categories = Category.query.all()
+        # print(categories)
+        formatted_categories = [category.format() for category in categories]
+        
+        if len(formatted_categories) == 0:
+            abort(404)
+        
         try:
             categories = Category.query.all()
             categories_list = {category.id: category.type for category in categories}
+            
             return jsonify({
                 'success': True,
-                'categories': categories_list
+                'categories': categories_list,
+                'total_category': len(Category.query.all())
             })
+                
         except Exception as e:
             print(e)
             abort(404)
@@ -311,6 +325,13 @@ def create_app(test_config=None):
         return (
             jsonify({"success": False, "error": 422, "message": "unprocessable"}),
             422,
+        )
+        
+    @app.errorhandler(405)
+    def not_allowed(error):
+        return (
+            jsonify({"success": False, "error": 405, "message": "Method Not Allowed"}),
+            405,
         )
 
     @app.errorhandler(400)

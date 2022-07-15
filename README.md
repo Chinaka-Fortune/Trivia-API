@@ -27,6 +27,10 @@ This Trivia app can:
 pip install -r requirements.txt
 ```
 
+```bash
+pip install dotenv
+```
+
 #### Key Pip Dependencies
 
 - [Flask](http://flask.pocoo.org/) is a lightweight backend microservices framework. Flask is required to handle requests and responses.
