@@ -24,8 +24,7 @@ class TriviaTestCase(unittest.TestCase):
         self.database_path = 'postgresql+psycopg2://{}:{}@{}:{}/{}'.format(self.DB_USER, self.DB_PASSWORD, self.DB_HOST, self.DB_PORT, self.database_name)
         setup_db(self.app, self.database_path)
         
-        self.new_question = {"quetion": "What is your hobby?", "answer": "Football", "category": "Sport", "difficulty": 1}
-
+        self.new_question = {"quetion": "What is your hobby?", "answer": "Football", "category": 6, "difficulty": 1}
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -156,7 +155,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data["questions"]))
     
     def test_404_sent_requesting_quiz_question(self):
-        res = self.client().post("/quizzes", json={"search": "What boxer's original name is Cassius Clay"})
+        res = self.client().post("/quizzes", json={"search": "Kitchen name?"})
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 400)
