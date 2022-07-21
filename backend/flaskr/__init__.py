@@ -26,7 +26,6 @@ def create_app(test_config=None):
     setup_db(app)
     cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-
     #The after_request decorator to set Access-Control-Allow
     @app.after_request
     def after_request(response):
@@ -37,7 +36,6 @@ def create_app(test_config=None):
             "Access-Control-Allow-Methods", "GET, PUT, PATCH, POST, DELETE, OPTIONS"
         )
         return response
-
     
     #This endpoint to handles GET requests for all available categories.
     @app.route("/categories")
@@ -67,26 +65,6 @@ def create_app(test_config=None):
             print(e)
             abort(404)
             
-        # page = request.args.get("page", 1, type=int)
-        # start = (page - 1) * 10
-        # end = start + 10
-        
-        # categories = Category.query.all()
-        # # print(categories)
-        # formatted_categories = [category.format() for category in categories]
-        
-        # if len(formatted_categories) == 0:
-        #     abort(404)
-            
-        # return jsonify(
-        #     {
-        #         "success": True,
-        #         "categories": formatted_categories[start:end],
-        #         "total_categories": len(formatted_categories),
-        #     }
-        # )
-
-
     """
     This endpoint handles GET requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories.
     At this point, starting the application loads questions and categories generated, ten questions per page and pagination at the bottom of the screen for three pages. Clicking on the page numbers updates the questions.
@@ -109,27 +87,6 @@ def create_app(test_config=None):
         except Exception as e:
             print(e)
             abort(404)
-        
-        # selection = Question.query.order_by(Question.id).all()
-        # current_questions = paginate_questions(request, selection)
-        # categories = Category.query.order_by(Category.type).all()
-        # current_category = [Category.type for category in categories]
-        
-        # if len(current_questions) == 0:
-        #     abort(404)
-            
-        # if len(categories) == 0:
-        #     abort(404)
-            
-        # return jsonify(
-        #     {
-        #         "success": True,
-        #         "questions": current_questions,
-        #         "total_questions": len(current_questions),
-        #         #"current_category": categories[]
-        #         "categories": current_category,
-        #     }
-        # )
 
     """
     This endpoint to DELETEs a question using a question ID.
@@ -345,7 +302,6 @@ def create_app(test_config=None):
         return (
             jsonify({"success": False, "error": 400, "message": "server error"}), 500
         )
-
 
     return app
 
